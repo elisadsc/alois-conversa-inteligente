@@ -11,7 +11,7 @@ export interface FeedbackRating {
   relevance: number;
   usefulness: number;
   trustworthiness: number;
-  comment?: string;
+  comment: string;
 }
 
 export interface MessageResponse {
@@ -31,6 +31,13 @@ export interface Message {
   responses?: MessageResponse[];
 }
 
+export interface Chat {
+  id: string;
+  name: string;
+  createdAt: Date;
+  messages: Message[];
+}
+
 export interface TimeFilter {
   label: string;
   value: string;
@@ -43,12 +50,18 @@ interface ChatContextType {
   evaluatingResponse: MessageResponse | null;
   timeFilter: string;
   timeFilters: TimeFilter[];
+  chats: Chat[];
+  currentChatId: string | null;
   addMessage: (content: string) => void;
   selectResponse: (messageId: string, responseId: string) => void;
   confirmResponseSelection: (confirmed: boolean) => void;
   submitEvaluation: (messageId: string, responseId: string, feedback: FeedbackRating) => void;
   setTimeFilter: (filter: string) => void;
   resetEvaluation: () => void;
+  createChat: () => void;
+  selectChat: (chatId: string) => void;
+  deleteChat: (chatId: string) => void;
+  renameChatTitle: (chatId: string, newName: string) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -65,7 +78,15 @@ const generateResponses = (messageId: string, query: string): MessageResponse[] 
 };
 
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [chats, setChats] = useState<Chat[]>([
+    {
+      id: 'chat-1',
+      name: 'Novo chat',
+      createdAt: new Date(),
+      messages: []
+    }
+  ]);
+  const [currentChatId, setCurrentChatId] = useState<string>('chat-1');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedResponse, setSelectedResponse] = useState<MessageResponse | null>(null);
   const [evaluatingResponse, setEvaluatingResponse] = useState<MessageResponse | null>(null);
@@ -80,6 +101,14 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     { label: 'Este Mês', value: 'thisMonth' },
   ];
 
+  // Helper to get the current chat
+  const getCurrentChat = () => {
+    return chats.find(chat => chat.id === currentChatId) || chats[0];
+  };
+
+  // Messages for the current chat
+  const messages = getCurrentChat()?.messages || [];
+
   const addMessage = (content: string) => {
     const newMessageId = `message-${Date.now()}`;
     const newMessage: Message = {
@@ -89,30 +118,52 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       timestamp: new Date(),
     };
 
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setChats(prevChats => {
+      return prevChats.map(chat => {
+        if (chat.id === currentChatId) {
+          return {
+            ...chat,
+            messages: [...chat.messages, newMessage]
+          };
+        }
+        return chat;
+      });
+    });
+    
     setIsLoading(true);
 
     // Simulando um delay de resposta do chatbot
     setTimeout(() => {
-      setMessages((prevMessages) => {
-        const updatedMessages = [...prevMessages];
-        const messageIndex = updatedMessages.findIndex((msg) => msg.id === newMessageId);
-        
-        if (messageIndex !== -1) {
-          updatedMessages[messageIndex] = {
-            ...updatedMessages[messageIndex],
-            responses: generateResponses(newMessageId, content)
-          };
-        }
-        
-        return updatedMessages;
+      setChats(prevChats => {
+        return prevChats.map(chat => {
+          if (chat.id === currentChatId) {
+            const updatedMessages = [...chat.messages];
+            const messageIndex = updatedMessages.findIndex(msg => msg.id === newMessageId);
+            
+            if (messageIndex !== -1) {
+              updatedMessages[messageIndex] = {
+                ...updatedMessages[messageIndex],
+                responses: generateResponses(newMessageId, content)
+              };
+            }
+            
+            return {
+              ...chat,
+              name: content.length > 30 ? `${content.substring(0, 30)}...` : content,
+              messages: updatedMessages
+            };
+          }
+          return chat;
+        });
       });
+      
       setIsLoading(false);
     }, 1500);
   };
 
   const selectResponse = (messageId: string, responseId: string) => {
-    const message = messages.find((msg) => msg.id === messageId);
+    const currentChat = getCurrentChat();
+    const message = currentChat.messages.find((msg) => msg.id === messageId);
     if (!message || !message.responses) return;
 
     const response = message.responses.find((res) => res.id === responseId);
@@ -132,30 +183,40 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const submitEvaluation = (messageId: string, responseId: string, feedback: FeedbackRating) => {
-    setMessages((prevMessages) => {
-      return prevMessages.map((message) => {
-        if (message.id !== messageId) return message;
+    setChats(prevChats => {
+      return prevChats.map(chat => {
+        if (chat.id === currentChatId) {
+          const updatedMessages = chat.messages.map(message => {
+            if (message.id !== messageId) return message;
 
-        const updatedResponses = message.responses?.map((response) => {
-          if (response.id === responseId) {
-            return {
-              ...response,
-              selected: true,
-              evaluated: true,
-              feedback
-            };
-          } else {
-            return {
-              ...response,
-              selected: false
-            };
-          }
-        });
+            const updatedResponses = message.responses?.map((response) => {
+              if (response.id === responseId) {
+                return {
+                  ...response,
+                  selected: true,
+                  evaluated: true,
+                  feedback
+                };
+              } else {
+                return {
+                  ...response,
+                  selected: false
+                };
+              }
+            });
 
-        return {
-          ...message,
-          responses: updatedResponses
-        };
+            return {
+              ...message,
+              responses: updatedResponses
+            };
+          });
+
+          return {
+            ...chat,
+            messages: updatedMessages
+          };
+        }
+        return chat;
       });
     });
 
@@ -172,6 +233,62 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     setSelectedResponse(null);
   };
 
+  // Chat management functions
+  const createChat = () => {
+    const newChatId = `chat-${Date.now()}`;
+    const newChat: Chat = {
+      id: newChatId,
+      name: 'Novo chat',
+      createdAt: new Date(),
+      messages: []
+    };
+    
+    setChats(prevChats => [...prevChats, newChat]);
+    setCurrentChatId(newChatId);
+  };
+
+  const selectChat = (chatId: string) => {
+    setCurrentChatId(chatId);
+  };
+
+  const deleteChat = (chatId: string) => {
+    setChats(prevChats => {
+      const updatedChats = prevChats.filter(chat => chat.id !== chatId);
+      
+      // If the deleted chat was current, select another one
+      if (chatId === currentChatId && updatedChats.length > 0) {
+        setCurrentChatId(updatedChats[0].id);
+      } else if (updatedChats.length === 0) {
+        // If we deleted the last chat, create a new one
+        const newChatId = `chat-${Date.now()}`;
+        const newChat: Chat = {
+          id: newChatId,
+          name: 'Novo chat',
+          createdAt: new Date(),
+          messages: []
+        };
+        setCurrentChatId(newChatId);
+        return [newChat];
+      }
+      
+      return updatedChats;
+    });
+  };
+
+  const renameChatTitle = (chatId: string, newName: string) => {
+    setChats(prevChats => {
+      return prevChats.map(chat => {
+        if (chat.id === chatId) {
+          return {
+            ...chat,
+            name: newName
+          };
+        }
+        return chat;
+      });
+    });
+  };
+
   const value = {
     messages,
     isLoading,
@@ -179,12 +296,18 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     evaluatingResponse,
     timeFilter,
     timeFilters,
+    chats,
+    currentChatId,
     addMessage,
     selectResponse,
     confirmResponseSelection,
     submitEvaluation,
     setTimeFilter,
-    resetEvaluation
+    resetEvaluation,
+    createChat,
+    selectChat,
+    deleteChat,
+    renameChatTitle
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

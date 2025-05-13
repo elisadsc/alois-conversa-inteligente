@@ -33,7 +33,7 @@ const formSchema = z.object({
   relevance: z.number().min(1).max(5),
   usefulness: z.number().min(1).max(5),
   trustworthiness: z.number().min(1).max(5),
-  comment: z.string().optional(),
+  comment: z.string().min(1, { message: "A justificativa é obrigatória" }),
 });
 
 export function RatingForm({ response }: RatingFormProps) {
@@ -53,7 +53,14 @@ export function RatingForm({ response }: RatingFormProps) {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const messageId = response.id.split("-response-")[0];
-    submitEvaluation(messageId, response.id, values);
+    submitEvaluation(messageId, response.id, {
+      coherence: values.coherence,
+      clarity: values.clarity,
+      relevance: values.relevance,
+      usefulness: values.usefulness,
+      trustworthiness: values.trustworthiness,
+      comment: values.comment,
+    });
   };
 
   const criteriaLabels = {
@@ -78,7 +85,7 @@ export function RatingForm({ response }: RatingFormProps) {
                 <FormField
                   key={name}
                   control={form.control}
-                  name={name as keyof FeedbackRating}
+                  name={name as "coherence" | "clarity" | "relevance" | "usefulness" | "trustworthiness"}
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -86,7 +93,7 @@ export function RatingForm({ response }: RatingFormProps) {
                         <FormControl>
                           <LikertScale
                             value={field.value}
-                            onChange={field.onChange}
+                            onChange={(value) => field.onChange(Number(value))}
                           />
                         </FormControl>
                       </div>
@@ -102,7 +109,7 @@ export function RatingForm({ response }: RatingFormProps) {
               name="comment"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Comentários adicionais (opcional)</FormLabel>
+                  <FormLabel>Justificativa <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Compartilhe aqui suas observações sobre a resposta..."
