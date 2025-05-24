@@ -1,0 +1,54 @@
+
+.react-chat-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: hsl(250, 33%, 98%);
+  color: hsl(222.2, 84%, 4.9%);
+}
+
+[data-theme="dark"] .react-chat-layout {
+  background-color: hsl(222, 47%, 11%);
+  color: hsl(210, 40%, 98%);
+}
+
+.react-chat-content {
+  display: flex;
+  flex: 1;
+  margin-top: 72px; /* Altura do header */
+}
+
+.react-chat-sidebar-container {
+  width: 256px;
+  min-width: 256px;
+  border-right: 1px solid hsl(214.3, 31.8%, 91.4%);
+  background-color: hsl(250, 33%, 98%);
+  z-index: 5;
+}
+
+[data-theme="dark"] .react-chat-sidebar-container {
+  border-right-color: hsl(217.2, 32.6%, 17.5%);
+  background-color: hsl(222, 47%, 11%);
+}
+
+.react-chat-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .react-chat-sidebar-container {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    bottom: 0;
+    z-index: 20;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="dark"] .react-chat-sidebar-container {
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+  }
+}

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { ReactButton } from './ui/ReactButton';
