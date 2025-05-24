@@ -16,30 +16,17 @@ import { useChat } from "@/contexts/ChatContext";
 
 export function PureChatSidebar() {
   const { 
-    filteredMessages, 
-    clearChat, 
-    deleteConversation,
-    loadConversation,
-    currentConversationId,
+    chats, 
+    currentChatId, 
+    createChat, 
+    selectChat, 
+    deleteChat,
+    renameChatTitle,
+    timeFilter,
     setTimeFilter 
   } = useChat();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
-
-  const conversations = filteredMessages.reduce((acc, message) => {
-    if (message.type === 'user') {
-      const conversationId = message.id;
-      if (!acc.find(c => c.id === conversationId)) {
-        acc.push({
-          id: conversationId,
-          title: message.content.slice(0, 50) + (message.content.length > 50 ? '...' : ''),
-          timestamp: new Date(),
-          messageCount: filteredMessages.filter(m => m.id.startsWith(conversationId)).length
-        });
-      }
-    }
-    return acc;
-  }, [] as Array<{ id: string; title: string; timestamp: Date; messageCount: number }>);
 
   const handleEdit = (id: string, currentTitle: string) => {
     setEditingId(id);
@@ -47,8 +34,9 @@ export function PureChatSidebar() {
   };
 
   const handleSaveEdit = (id: string) => {
-    // Aqui você implementaria a lógica para salvar o novo título
-    console.log(`Salvando novo título para ${id}: ${newTitle}`);
+    if (newTitle.trim() !== '') {
+      renameChatTitle(id, newTitle.trim());
+    }
     setEditingId(null);
     setNewTitle("");
   };
@@ -83,7 +71,7 @@ export function PureChatSidebar() {
             Histórico de Chats
           </h2>
           <button
-            onClick={clearChat}
+            onClick={createChat}
             style={{
               display: "flex",
               alignItems: "center",
@@ -108,6 +96,7 @@ export function PureChatSidebar() {
         {/* Filtros de tempo */}
         <div style={{ padding: "0 8px" }}>
           <select
+            value={timeFilter}
             onChange={(e) => setTimeFilter(e.target.value)}
             style={{
               width: "100%",
@@ -132,7 +121,7 @@ export function PureChatSidebar() {
           <SidebarGroupLabel>Conversas Recentes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {conversations.length === 0 ? (
+              {chats.length === 0 ? (
                 <div style={{ 
                   padding: "16px", 
                   textAlign: "center",
@@ -142,8 +131,8 @@ export function PureChatSidebar() {
                   Nenhuma conversa encontrada
                 </div>
               ) : (
-                conversations.map((conversation) => (
-                  <SidebarMenuItem key={conversation.id}>
+                chats.map((chat) => (
+                  <SidebarMenuItem key={chat.id}>
                     <div style={{ 
                       display: "flex", 
                       alignItems: "center",
@@ -151,17 +140,17 @@ export function PureChatSidebar() {
                       width: "100%"
                     }}>
                       <SidebarMenuButton
-                        isActive={currentConversationId === conversation.id}
-                        onClick={() => loadConversation(conversation.id)}
+                        isActive={currentChatId === chat.id}
+                        onClick={() => selectChat(chat.id)}
                         style={{ flex: 1, justifyContent: "flex-start" }}
                       >
                         <MessageSquare style={{ width: "16px", height: "16px" }} />
-                        {editingId === conversation.id ? (
+                        {editingId === chat.id ? (
                           <input
                             type="text"
                             value={newTitle}
                             onChange={(e) => setNewTitle(e.target.value)}
-                            onKeyDown={(e) => handleKeyDown(e, conversation.id)}
+                            onKeyDown={(e) => handleKeyDown(e, chat.id)}
                             onBlur={() => handleCancelEdit()}
                             autoFocus
                             style={{
@@ -180,17 +169,17 @@ export function PureChatSidebar() {
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap"
                           }}>
-                            {conversation.title}
+                            {chat.name}
                           </span>
                         )}
                       </SidebarMenuButton>
                       
-                      {editingId !== conversation.id && (
+                      {editingId !== chat.id && (
                         <div style={{ display: "flex", gap: "2px" }}>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleEdit(conversation.id, conversation.title);
+                              handleEdit(chat.id, chat.name);
                             }}
                             style={{
                               display: "flex",
@@ -215,7 +204,7 @@ export function PureChatSidebar() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              deleteConversation(conversation.id);
+                              deleteChat(chat.id);
                             }}
                             style={{
                               display: "flex",
@@ -252,7 +241,7 @@ export function PureChatSidebar() {
                       marginLeft: "24px",
                       marginTop: "2px"
                     }}>
-                      {conversation.messageCount} mensagens
+                      {chat.messages.length} mensagens
                     </div>
                   </SidebarMenuItem>
                 ))

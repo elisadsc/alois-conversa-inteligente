@@ -135,10 +135,19 @@ export const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   SidebarMenuButtonProps
 >(({ className, isActive = false, asChild = false, ...props }, ref) => {
-  const Component = asChild ? "div" : "button";
+  if (asChild) {
+    return (
+      <div
+        className={`sidebar-menu-button ${className || ""}`.trim()}
+        data-sidebar="menu-button"
+        data-active={isActive}
+        {...props}
+      />
+    );
+  }
   
   return (
-    <Component
+    <button
       ref={ref}
       className={`sidebar-menu-button ${className || ""}`.trim()}
       data-sidebar="menu-button"
