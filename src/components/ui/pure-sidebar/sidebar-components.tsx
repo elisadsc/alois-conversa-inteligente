@@ -135,24 +135,23 @@ export const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   SidebarMenuButtonProps
 >(({ className, isActive = false, asChild = false, ...props }, ref) => {
+  const buttonProps = {
+    className: `sidebar-menu-button ${className || ""}`.trim(),
+    "data-sidebar": "menu-button",
+    "data-active": isActive,
+    ...props
+  };
+
   if (asChild) {
-    return (
-      <div
-        className={`sidebar-menu-button ${className || ""}`.trim()}
-        data-sidebar="menu-button"
-        data-active={isActive}
-        {...props}
-      />
-    );
+    // When asChild is true, we return the props to be spread to a child component
+    // The parent component should handle the actual rendering
+    return React.createElement("div", buttonProps);
   }
   
   return (
     <button
       ref={ref}
-      className={`sidebar-menu-button ${className || ""}`.trim()}
-      data-sidebar="menu-button"
-      data-active={isActive}
-      {...props}
+      {...buttonProps}
     />
   );
 });
