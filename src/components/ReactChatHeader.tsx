@@ -1,15 +1,15 @@
+
 import React, { useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useChat, TimeFilter } from '@/contexts/ChatContext';
 import { ReactButton } from './ui/ReactButton';
+import { ReactDropdown } from './ui/ReactDropdown';
 import { ReactDialog } from './ui/ReactDialog';
 import './ReactChatHeader.css';
 
-interface ReactChatHeaderProps {
-  onToggleSidebar: () => void;
-}
-
-export function ReactChatHeader({ onToggleSidebar }: ReactChatHeaderProps) {
+export function ReactChatHeader() {
   const { theme, toggleTheme } = useTheme();
+  const { timeFilters, setTimeFilter } = useChat();
   const [infoOpen, setInfoOpen] = useState(false);
 
   return (
@@ -37,14 +37,23 @@ export function ReactChatHeader({ onToggleSidebar }: ReactChatHeaderProps) {
             {theme === "light" ? <MoonIcon /> : <SunIcon />}
           </ReactButton>
           
-          <ReactButton
-            variant="ghost"
-            size="icon"
-            onClick={onToggleSidebar}
-            aria-label="Histórico de conversas"
+          <ReactDropdown
+            trigger={
+              <ReactButton variant="ghost" size="icon" aria-label="Histórico">
+                <HistoryIcon />
+              </ReactButton>
+            }
           >
-            <HistoryIcon />
-          </ReactButton>
+            {timeFilters.map((filter: TimeFilter) => (
+              <div 
+                key={filter.value}
+                className="react-dropdown-item"
+                onClick={() => setTimeFilter(filter.value)}
+              >
+                {filter.label}
+              </div>
+            ))}
+          </ReactDropdown>
         </div>
       </header>
 
@@ -69,7 +78,7 @@ export function ReactChatHeader({ onToggleSidebar }: ReactChatHeaderProps) {
           <h3>Funcionalidades:</h3>
           <ul>
             <li>Alterne entre modo claro e escuro com o botão de lua/sol.</li>
-            <li>Acesse o histórico de conversas com o botão de histórico.</li>
+            <li>Filtre seu histórico de interações pelo período usando o botão de histórico.</li>
             <li>Acesse estas instruções a qualquer momento clicando no ícone de informação.</li>
           </ul>
         </div>

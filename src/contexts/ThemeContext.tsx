@@ -20,19 +20,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     
     if (savedTheme) {
       setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
     } else if (prefersDark) {
       setTheme('dark');
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.classList.add('dark');
     }
   }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
+    document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', newTheme);
   };
 
