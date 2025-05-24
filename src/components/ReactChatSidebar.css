@@ -1,0 +1,135 @@
+
+.react-chat-sidebar {
+  width: 256px;
+  min-width: 256px;
+}
+
+.react-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.react-sidebar-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.react-sidebar-content {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.react-chat-item {
+  width: 100%;
+}
+
+.react-chat-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+}
+
+.react-chat-edit input {
+  flex: 1;
+  height: 32px;
+  font-size: 14px;
+}
+
+.react-chat-edit button {
+  height: 32px;
+  padding: 0 8px;
+}
+
+.react-chat-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  color: hsl(222.2, 84%, 4.9%);
+  position: relative;
+  group: true;
+}
+
+[data-theme="dark"] .react-chat-button {
+  color: hsl(210, 40%, 98%);
+}
+
+.react-chat-button:hover {
+  background-color: hsl(250, 95%, 92%);
+  color: hsl(222.2, 47.4%, 11.2%);
+}
+
+[data-theme="dark"] .react-chat-button:hover {
+  background-color: hsl(250, 33%, 25%);
+  color: hsl(210, 40%, 98%);
+}
+
+.react-chat-button.active {
+  background-color: hsl(250, 95%, 92%);
+  font-weight: 500;
+  color: hsl(222.2, 47.4%, 11.2%);
+}
+
+[data-theme="dark"] .react-chat-button.active {
+  background-color: hsl(250, 33%, 25%);
+  color: hsl(210, 40%, 98%);
+}
+
+.react-chat-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.react-chat-info span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.react-chat-actions {
+  display: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.react-chat-button:hover .react-chat-actions {
+  display: flex;
+}
+
+.react-chat-actions button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+.react-delete-button {
+  color: hsl(0, 84.2%, 60.2%);
+}
+
+.react-delete-button:hover {
+  color: hsl(0, 84.2%, 60.2%);
+}
+
+.react-new-chat-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}

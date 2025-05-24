@@ -1,0 +1,31 @@
+
+.react-chat-input {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: hsl(250, 33%, 98%);
+  border-top: 1px solid hsl(214.3, 31.8%, 91.4%);
+  padding: 16px;
+  z-index: 10;
+}
+
+[data-theme="dark"] .react-chat-input {
+  background-color: hsl(222, 47%, 11%);
+  border-top-color: hsl(217.2, 32.6%, 17.5%);
+}
+
+.react-chat-input-container {
+  max-width: 768px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.react-chat-input textarea {
+  flex: 1;
+  resize: none;
+  min-height: 50px;
+  max-height: 200px;
+}

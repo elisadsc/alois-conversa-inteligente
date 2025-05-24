@@ -1,0 +1,81 @@
+
+.react-rating-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.react-rating-criteria {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.react-rating-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.react-rating-label-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .react-rating-label-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.react-rating-label {
+  min-width: 120px;
+  font-weight: 500;
+  color: hsl(222.2, 84%, 4.9%);
+}
+
+[data-theme="dark"] .react-rating-label {
+  color: hsl(210, 40%, 98%);
+}
+
+.react-comment-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.react-comment-label {
+  font-weight: 500;
+  color: hsl(222.2, 84%, 4.9%);
+}
+
+[data-theme="dark"] .react-comment-label {
+  color: hsl(210, 40%, 98%);
+}
+
+.react-required {
+  color: hsl(0, 84.2%, 60.2%);
+}
+
+.react-comment-textarea {
+  resize: none;
+  min-height: 80px;
+}
+
+.react-error-message {
+  font-size: 12px;
+  color: hsl(0, 84.2%, 60.2%);
+}
+
+.react-rating-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.react-rating-footer button {
+  min-width: 100px;
+}

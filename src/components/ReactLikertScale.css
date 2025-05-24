@@ -1,0 +1,37 @@
+
+.react-likert-scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.react-likert-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background-color: hsl(210, 40%, 96.1%);
+  color: hsl(215.4, 16.3%, 46.9%);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .react-likert-button {
+  background-color: hsl(217.2, 32.6%, 17.5%);
+  color: hsl(215, 20.2%, 65.1%);
+}
+
+.react-likert-button:hover {
+  background-color: hsl(252, 82%, 74%, 0.2);
+}
+
+.react-likert-button.active {
+  background-color: hsl(252, 82%, 74%);
+  color: white;
+}

@@ -1,0 +1,92 @@
+
+.react-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 200ms ease-in-out;
+}
+
+.react-dialog-content {
+  position: relative;
+  width: 100%;
+  max-width: 512px;
+  background-color: hsl(0, 0%, 100%);
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  animation: slideIn 200ms ease-in-out;
+}
+
+[data-theme="dark"] .react-dialog-content {
+  background-color: hsl(222.2, 84%, 4.9%);
+}
+
+.react-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0 24px;
+}
+
+.react-dialog-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: hsl(222.2, 84%, 4.9%);
+}
+
+[data-theme="dark"] .react-dialog-title {
+  color: hsl(210, 40%, 98%);
+}
+
+.react-dialog-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: hsl(215.4, 16.3%, 46.9%);
+  transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .react-dialog-close {
+  color: hsl(215, 20.2%, 65.1%);
+}
+
+.react-dialog-close:hover {
+  background-color: hsl(250, 95%, 92%);
+  color: hsl(222.2, 47.4%, 11.2%);
+}
+
+[data-theme="dark"] .react-dialog-close:hover {
+  background-color: hsl(250, 33%, 25%);
+  color: hsl(210, 40%, 98%);
+}
+
+.react-dialog-body {
+  padding: 24px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-16px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}

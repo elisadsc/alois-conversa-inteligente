@@ -1,0 +1,38 @@
+
+.react-input {
+  display: flex;
+  height: 40px;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid hsl(214.3, 31.8%, 91.4%);
+  background-color: hsl(0, 0%, 100%);
+  padding: 8px 12px;
+  font-size: 14px;
+  transition: all 0.15s ease;
+  outline: none;
+  color: hsl(222.2, 84%, 4.9%);
+}
+
+[data-theme="dark"] .react-input {
+  border-color: hsl(217.2, 32.6%, 17.5%);
+  background-color: hsl(222, 47%, 11%);
+  color: hsl(210, 40%, 98%);
+}
+
+.react-input::placeholder {
+  color: hsl(215.4, 16.3%, 46.9%);
+}
+
+[data-theme="dark"] .react-input::placeholder {
+  color: hsl(215, 20.2%, 65.1%);
+}
+
+.react-input:focus {
+  border-color: hsl(252, 82%, 74%);
+  box-shadow: 0 0 0 2px hsl(252, 82%, 74%, 0.2);
+}
+
+.react-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

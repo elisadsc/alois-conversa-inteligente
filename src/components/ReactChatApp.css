@@ -1,0 +1,33 @@
+
+.react-chat-app {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: hsl(250, 33%, 98%);
+  color: hsl(222.2, 84%, 4.9%);
+}
+
+.react-chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: hsl(250, 33%, 98%);
+}
+
+/* Dark theme */
+[data-theme="dark"] .react-chat-app {
+  background-color: hsl(222, 47%, 11%);
+  color: hsl(210, 40%, 98%);
+}
+
+[data-theme="dark"] .react-chat-main {
+  background-color: hsl(222, 47%, 11%);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .react-chat-app {
+    flex-direction: column;
+  }
+}
